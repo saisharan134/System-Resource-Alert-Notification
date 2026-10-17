@@ -57,8 +57,12 @@ int main(void) {
         count++;
     }
 
-    closedir(proc);
+    closedir(proc);int written = snprintf(path, sizeof(path),
+                       "/proc/%s/status", entry->d_name);
 
+if (written < 0 || (size_t)written >= sizeof(path)) {
+    continue;
+}
     printf("------------------------------------------------\n");
     printf("Processes inspected: %d\n", count);
     printf("Process monitoring completed.\n");
