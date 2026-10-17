@@ -1,6 +1,5 @@
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
 #include <ctype.h>
@@ -24,17 +23,23 @@ int main(void) {
     printf("------------------------------------------------\n");
 
     while ((entry = readdir(proc)) != NULL) {
-        /* /proc contains numeric directories for processes */
         if (!isdigit((unsigned char)entry->d_name[0])) {
             continue;
         }
 
         char path[256];
-        snprintf(path, sizeof(path), "/proc/%s/status", entry->d_name);
+
+        int written = snprintf(path, sizeof(path),
+                               "/proc/%s/status", entry->d_name);
+
+        if (written < 0 || (size_t)written >= sizeof(path)) {
+            continue;
+        }
 
         FILE *fp = fopen(path, "r");
+
         if (fp == NULL) {
-            continue;  /* Process may have exited */
+            continue;
         }
 
         char line[256];
@@ -57,16 +62,11 @@ int main(void) {
         count++;
     }
 
-    closedir(proc);int written = snprintf(path, sizeof(path),
-                       "/proc/%s/status", entry->d_name);
+    closedir(proc);
 
-if (written < 0 || (size_t)written >= sizeof(path)) {
-    continue;
-}
     printf("------------------------------------------------\n");
     printf("Processes inspected: %d\n", count);
     printf("Process monitoring completed.\n");
 
     return 0;
 }
-
