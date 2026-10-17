@@ -1,0 +1,10 @@
+# Compiled monitoring programs
+/cpu_monitor
+/memory_monitor
+/disk_monitor
+/process_monitor
+/alert_engine
+/system_monitor
+
+# Generated alert log
+/logs/alerts.log
